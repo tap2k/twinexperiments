@@ -49,15 +49,22 @@ The system supports flexible persona formatting. Change `PERSONA_FORMAT` in `min
 - `demographics_cognitive_economic`
 - `all_scores_no_demographics`
 
-## Compare Persona Formats
+## Compare Persona Formats and Models
 
-Test multiple formats to see their impact on accuracy:
+Test multiple formats and/or models to see their impact on accuracy:
 
 ```bash
+# Compare formats only
 python compare_formats.py
+
+# Compare models only
+python compare_formats.py --models gemini-2.5-flash-lite,haiku-4.5,sonnet-4.5 --formats summary
+
+# Compare both (matrix comparison)
+python compare_formats.py --models gemini-2.5-flash-lite,haiku-4.5 --formats empty,demographics_big5,summary
 ```
 
-This will run the same test with different persona formats and output a comparison table.
+This will run tests with different combinations and output a comparison table.
 
 ## Configuration
 
@@ -108,6 +115,8 @@ Available components:
 ## Output
 
 Results are saved to `data/` directory:
-- `minimal_test_results.csv` - Detailed predictions
-- `format_comparison_results.csv` - Format comparison details
-- `format_comparison_summary.csv` - Format comparison summary
+- `minimal_test_results.csv` - Detailed predictions from minimal_test.py
+- `format_comparison_results.csv` - Format/model comparison details
+- `format_comparison_summary.csv` - Format/model comparison summary
+- `comparison_results_{timestamp}.csv` - Timestamped results when comparing multiple models
+- `comparison_summary_{timestamp}.csv` - Timestamped summary when comparing multiple models

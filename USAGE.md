@@ -50,7 +50,7 @@ python minimal_test.py --personas 2058 --questions 63
 
 ## compare_formats.py
 
-Compare multiple persona formats in one run.
+Compare multiple persona formats and/or models in one run.
 
 ### Basic Usage
 ```bash
@@ -65,6 +65,7 @@ python compare_formats.py --model haiku-4.5 --personas 10 --questions 5 --format
 ### All Options
 ```
 --model MODEL           LLM model to use (default: gemini-2.5-flash-lite)
+--models MODEL1,MODEL2,...  Comma-separated list of models to test (overrides --model)
 --personas N            Number of personas to test (default: 5)
 --questions N           Number of questions per persona (default: 3)
 --formats FORMAT1,FORMAT2,...  Comma-separated list of formats to test
@@ -76,6 +77,16 @@ python compare_formats.py --model haiku-4.5 --personas 10 --questions 5 --format
 **Compare just two formats:**
 ```bash
 python compare_formats.py --formats empty,summary
+```
+
+**Compare multiple models with single format:**
+```bash
+python compare_formats.py --models gemini-2.5-flash-lite,haiku-4.5,sonnet-4.5 --formats summary
+```
+
+**Compare models AND formats (matrix comparison):**
+```bash
+python compare_formats.py --models gemini-2.5-flash-lite,haiku-4.5 --formats empty,demographics_big5,summary
 ```
 
 **Test all formats with a better model:**

@@ -1,11 +1,12 @@
 """
-Compare different persona formats to see their impact on accuracy.
+Compare different persona formats and/or models to see their impact on accuracy.
 
 Usage:
     python compare_formats.py [options]
 
 Options:
     --model MODEL           LLM model to use (default: gemini-2.5-flash-lite)
+    --models MODEL1,MODEL2,...  Comma-separated list of models to test (overrides --model)
     --personas N            Number of personas to test (default: 5)
     --questions N           Number of questions per persona (default: 3)
     --formats FORMAT1,FORMAT2,...  Comma-separated list of formats to test
@@ -67,8 +68,8 @@ def load_wave4_ground_truth(data_dir):
 
 
 def test_format(format_name, persona_df, wave4_df, model, max_questions=3):
-    """Test a single persona format and return results."""
-    print(f"\nTesting format: {format_name}")
+    """Test a single persona format with a specific model and return results."""
+    print(f"\nTesting format: {format_name} | model: {model}")
     print("-" * 80)
 
     results = []
@@ -136,6 +137,7 @@ def test_format(format_name, persona_df, wave4_df, model, max_questions=3):
                     correct_predictions += 1
 
                 results.append({
+                    'model': model,
                     'format': format_name,
                     'pid': pid,
                     'question_id': q_data['question_id'],
@@ -154,6 +156,7 @@ def test_format(format_name, persona_df, wave4_df, model, max_questions=3):
     print(f"  Questions: {total_questions}, Correct: {correct_predictions}, Accuracy: {accuracy:.1f}%, Cost: ${total_cost:.4f}")
 
     return {
+        'model': model,
         'format': format_name,
         'total_questions': total_questions,
         'correct': correct_predictions,
@@ -164,10 +167,12 @@ def test_format(format_name, persona_df, wave4_df, model, max_questions=3):
 
 
 def main():
-    """Compare all persona formats."""
-    parser = argparse.ArgumentParser(description='Compare persona formats')
+    """Compare persona formats and/or models."""
+    parser = argparse.ArgumentParser(description='Compare persona formats and/or models')
     parser.add_argument('--model', type=str, default=DEFAULT_MODEL,
                         help=f'LLM model to use (default: {DEFAULT_MODEL})')
+    parser.add_argument('--models', type=str, default=None,
+                        help='Comma-separated list of models to test (overrides --model)')
     parser.add_argument('--personas', type=int, default=DEFAULT_NUM_PERSONAS,
                         help=f'Number of personas to test (default: {DEFAULT_NUM_PERSONAS})')
     parser.add_argument('--questions', type=int, default=DEFAULT_MAX_QUESTIONS,
@@ -185,16 +190,23 @@ def main():
     else:
         formats_to_test = DEFAULT_FORMATS
 
+    # Parse models
+    if args.models:
+        models_to_test = [m.strip() for m in args.models.split(',')]
+    else:
+        models_to_test = [args.model]
+
     data_dir = Path(args.data_dir)
 
     print("=" * 80)
-    print("PERSONA FORMAT COMPARISON")
+    print("PERSONA FORMAT & MODEL COMPARISON")
     print("=" * 80)
-    print(f"\nModel: {args.model}")
+    print(f"\nModels: {', '.join(models_to_test)}")
+    print(f"Formats: {', '.join(formats_to_test)}")
     print(f"Personas: {args.personas}")
     print(f"Questions per persona: {args.questions}")
-    print(f"Formats to test: {', '.join(formats_to_test)}")
     print(f"Data directory: {data_dir}")
+    print(f"\nTotal combinations to test: {len(models_to_test)} models × {len(formats_to_test)} formats = {len(models_to_test) * len(formats_to_test)} tests")
     print()
 
     # Load data once
@@ -203,45 +215,56 @@ def main():
     wave4_df = load_wave4_ground_truth(data_dir)
     print(f"  Loaded {len(persona_df)} personas, {len(wave4_df)} Wave 4 responses")
 
-    # Test each format
+    # Test each model × format combination
     all_results = []
     summary_stats = []
 
-    for format_name in formats_to_test:
-        result = test_format(format_name, persona_df, wave4_df, args.model, args.questions)
-        all_results.extend(result['results'])
-        summary_stats.append({
-            'format': format_name,
-            'accuracy': result['accuracy'],
-            'cost': result['cost'],
-            'questions': result['total_questions']
-        })
+    for model in models_to_test:
+        for format_name in formats_to_test:
+            result = test_format(format_name, persona_df, wave4_df, model, args.questions)
+            all_results.extend(result['results'])
+            summary_stats.append({
+                'model': model,
+                'format': format_name,
+                'accuracy': result['accuracy'],
+                'cost': result['cost'],
+                'questions': result['total_questions']
+            })
 
     # Print summary table
     print("\n" + "=" * 80)
     print("SUMMARY")
     print("=" * 80)
-    print(f"\n{'Format':<40} {'Accuracy':<12} {'Cost':<12} {'Questions':<10}")
-    print("-" * 80)
+    print(f"\n{'Model':<25} {'Format':<30} {'Accuracy':<12} {'Cost':<12} {'Questions':<10}")
+    print("-" * 100)
     for stat in summary_stats:
-        print(f"{stat['format']:<40} {stat['accuracy']:>6.1f}%     ${stat['cost']:>8.4f}    {stat['questions']:>6}")
+        print(f"{stat['model']:<25} {stat['format']:<30} {stat['accuracy']:>6.1f}%     ${stat['cost']:>8.4f}    {stat['questions']:>6}")
 
     # Save detailed results
     if all_results:
         results_df = pd.DataFrame(all_results)
         output_dir = Path(__file__).parent / "data"
         output_dir.mkdir(exist_ok=True)
-        output_file = output_dir / "format_comparison_results.csv"
+
+        # Add timestamp to filename if comparing multiple models
+        if len(models_to_test) > 1:
+            from datetime import datetime
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            output_file = output_dir / f"comparison_results_{timestamp}.csv"
+            summary_file = output_dir / f"comparison_summary_{timestamp}.csv"
+        else:
+            output_file = output_dir / "format_comparison_results.csv"
+            summary_file = output_dir / "format_comparison_summary.csv"
+
         results_df.to_csv(output_file, index=False)
         print(f"\nDetailed results saved to: {output_file}")
 
-    # Save summary
-    summary_df = pd.DataFrame(summary_stats)
-    summary_file = output_dir / "format_comparison_summary.csv"
-    summary_df.to_csv(summary_file, index=False)
-    print(f"Summary saved to: {summary_file}")
+        # Save summary
+        summary_df = pd.DataFrame(summary_stats)
+        summary_df.to_csv(summary_file, index=False)
+        print(f"Summary saved to: {summary_file}")
 
-    print("\n" + "=" * 80)
+    print("\n" + "=" * 100)
 
 
 if __name__ == "__main__":
