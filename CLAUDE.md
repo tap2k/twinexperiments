@@ -81,27 +81,66 @@ df.columns = ['pid', 'wave1_3_persona_text', 'wave1_3_persona_json',
               'wave4_Q_wave1_3_A', 'wave4_Q_wave4_A']
 ```
 
-The `wave4_Q_wave4_A` column contains 18 study blocks:
+The `wave4_Q_wave4_A` column contains 37 unique study blocks:
 
-**Wave 4 Study Blocks** (18 behavioral economics experiments):
-1. `False Consensus Effect` - Overestimating agreement with one's opinions
-2. `Base-rate Fallacy` - Ignoring prior probabilities
-3. `Preference Redistribution` - Changing preferences when framing changes
-4. `Ambiguity Aversion` - Preferring known vs. unknown probabilities
-5. `Reflection Effect` - Risk preferences reversing for gains vs. losses
-6. `Certainty Effect` - Overweighting certain outcomes
-7. `Disposition Effect` - Selling winners too early, holding losers too long
-8. `Ellsberg Paradox` - Ambiguity aversion in probability judgments
-9. `Decoy Effect` - Adding irrelevant options changes preferences
-10. `Isolation Effect` - Focusing on differences, ignoring similarities
-11. `Present Bias` - Preferring immediate rewards
-12. `Risky-choice Framing` - Gain/loss framing affects risk preferences
-13. `Anchoring` - Over-relying on first piece of information
-14. `Attribute Framing` - Positive/negative framing of same attribute
-15. `IKEA Effect` - Valuing self-assembled items more
-16. `Sunk-cost Fallacy` - Continuing due to past investment
-17. `Endowment Effect` - Valuing owned items more than identical non-owned
-18. `Status-quo Bias` - Preferring current state
+**Wave 4 Study Blocks** (37 behavioral economics experiments):
+
+**Anchoring Experiments:**
+1. `Anchoring - African countries high` - High anchor variant
+2. `Anchoring - African countries low` - Low anchor variant
+3. `Anchoring - redwood high` - High anchor variant
+4. `Anchoring - redwood low` - Low anchor variant
+
+**Base-rate Experiments:**
+5. `Base-rate 30 engineers` - 30% engineers base rate
+6. `Base-rate 70 engineers` - 70% engineers base rate
+
+**Framing Experiments:**
+7. `Disease - gain` - Gain-framed disease problem
+8. `Disease-loss` - Loss-framed disease problem
+9. `Absolute vs. relative - calculator` - Calculator pricing context
+10. `Absolute vs. relative - jacket` - Jacket pricing context
+
+**Risk & Probability:**
+11. `Allais Form 1` - Allais paradox variant 1
+12. `Allais Form 2` - Allais paradox variant 2
+13. `Probability matching vs. maximizing - Problem 1` - Probability judgment task
+14. `Probability matching vs. maximizing - Problem 2` - Probability judgment task
+
+**Cognitive Biases:**
+15. `False consensus` - Overestimating agreement with opinions
+16. `Linda-conjunction` - Conjunction fallacy with Linda scenario
+17. `Linda -no conjunction` - Linda scenario without conjunction
+18. `Myside Ford` - Myside bias (Ford variant)
+19. `Myside German` - Myside bias (German variant)
+20. `Outcome bias - failure` - Judging decisions by failure outcomes
+21. `Outcome bias - success` - Judging decisions by success outcomes
+
+**Proportion & Comparison:**
+22. `Proportion dominance 1A` - Proportion dominance task variant
+23. `Proportion dominance 1B` - Proportion dominance task variant
+24. `Proportion dominance 1C` - Proportion dominance task variant
+25. `Proportion dominance 2A` - Proportion dominance task variant
+26. `Proportion dominance 2B` - Proportion dominance task variant
+27. `Proportion dominance 2C` - Proportion dominance task variant
+
+**Decision Making:**
+28. `Less is More Gamble A` - Less-is-more effect variant
+29. `Less is More Gamble B` - Less-is-more effect variant
+30. `Less is More Gamble C` - Less-is-more effect variant
+31. `Sunk cost - no` - Sunk cost fallacy (no variant)
+32. `Sunk cost - yes` - Sunk cost fallacy (yes variant)
+
+**Valuation:**
+33. `WTA/WTP Thaler problem - WTA certainty` - Willingness to accept (certainty)
+34. `WTA/WTP Thaler problem - WTP certainty` - Willingness to pay (certainty)
+35. `WTA/WTP Thaler - WTP noncertainty` - Willingness to pay (uncertainty)
+
+**Market Research:**
+36. `Product Preferences - Pricing` - Product pricing preferences
+
+**General:**
+37. `Non-experimental heuristics and biases` - General heuristics and biases questions
 
 **Question Types**:
 - `MC` (Multiple Choice): Single selection from options
