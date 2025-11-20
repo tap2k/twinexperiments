@@ -146,7 +146,7 @@ def trim_messages(messages, model_type=None, model=DEFAULT_MODEL):
     return prepared_messages
 
 def openai_compatible_chat(messages, model="meta-llama/Llama-3.3-70B-Instruct",
-                               json_mode=False, temperature=0.7,
+                               json_mode=False, temperature=None,
                                frequency_penalty=0, base_url=None, api_key=None, return_usage=False):
     """Generic chat completion for OpenAI-compatible APIs."""
     try:
@@ -179,11 +179,11 @@ def openai_compatible_chat(messages, model="meta-llama/Llama-3.3-70B-Instruct",
         }
 
         if not model.startswith('o'):
-            params.update({
-                'temperature': temperature,
-                'frequency_penalty': frequency_penalty,
-                'response_format': {'type': 'json_object' if json_mode else 'text'}
-            })
+            if temperature is not None:
+                params['temperature'] = temperature
+            if frequency_penalty:
+                params['frequency_penalty'] = frequency_penalty
+            params['response_format'] = {'type': 'json_object' if json_mode else 'text'}
         else:
             params['reasoning_effort'] = 'medium'
 
@@ -205,7 +205,7 @@ def openai_compatible_chat(messages, model="meta-llama/Llama-3.3-70B-Instruct",
         return DEFAULT_RESPONSE
 
 def claude(messages, model='claude-3-5-haiku-latest',
-                json_mode=False, temperature=0.7,
+                json_mode=False, temperature=None,
                 frequency_penalty=0):
     """Anthropic Claude chat completion."""
     try:
@@ -219,13 +219,16 @@ def claude(messages, model='claude-3-5-haiku-latest',
                                             'claude', model)
 
         client = Anthropic()
-        response = client.messages.create(
-            max_tokens=64000,  # All Claude 4.x models support 64K output
-            system=system_msg,
-            messages=processed_messages,
-            model=model,
-            temperature=temperature
-        )
+        params = {
+            'max_tokens': 64000,  # All Claude 4.x models support 64K output
+            'system': system_msg,
+            'messages': processed_messages,
+            'model': model,
+        }
+        if temperature is not None:
+            params['temperature'] = temperature
+
+        response = client.messages.create(**params)
 
         text_response = response.content[0].text
         return clean_response(text_response) if json_mode else text_response
@@ -234,19 +237,22 @@ def claude(messages, model='claude-3-5-haiku-latest',
         return DEFAULT_RESPONSE
 
 def gemini(messages, model='gemini-2.0-flash-001',
-                json_mode=False, temperature=0.7,
+                json_mode=False, temperature=None,
                 frequency_penalty=0):
     """Google Gemini chat completion."""
     try:
         processed_messages = trim_messages(messages, model=model)
 
         genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
+        generation_config = {
+            'max_output_tokens': 65536  # All Gemini 2.5 models support 64K output
+        }
+        if temperature is not None:
+            generation_config['temperature'] = temperature
+
         model_client = genai.GenerativeModel(
             model_name=model,
-            generation_config={
-                'temperature': temperature,
-                'max_output_tokens': 65536  # All Gemini 2.5 models support 64K output
-            }
+            generation_config=generation_config
         )
 
         system_msg = next((msg['content'] for msg in processed_messages 
@@ -284,7 +290,7 @@ def gemini(messages, model='gemini-2.0-flash-001',
         return DEFAULT_RESPONSE
 
 def pplx(messages, model='llama-3.1-sonar-small-128k-online',
-         json_mode=False, temperature=0.7,
+         json_mode=False, temperature=None,
          frequency_penalty=0.01):
     """Perplexity chat completion."""
     try:
@@ -307,14 +313,17 @@ def pplx(messages, model='llama-3.1-sonar-small-128k-online',
 
         processed_messages = trim_messages(prepared_messages, model=model)
 
+        payload = {
+            'model': model,
+            'messages': processed_messages,
+            'frequency_penalty': frequency_penalty,
+        }
+        if temperature is not None:
+            payload['temperature'] = temperature
+
         response = requests.post(
             'https://api.perplexity.ai/chat/completions',
-            json={
-                'model': model,
-                'messages': processed_messages,
-                'temperature': temperature,
-                'frequency_penalty': frequency_penalty,
-            },
+            json=payload,
             headers={
                 'Authorization': f"Bearer {os.getenv('PERPLEXITY_API_KEY')}",
                 'Content-Type': 'application/json',
@@ -358,7 +367,7 @@ def format_messages_for_llama(messages):
     
     return formatted
 
-def huggingface(messages, model, json_mode=False, temperature=0.7, frequency_penalty=0):
+def huggingface(messages, model, json_mode=False, temperature=None, frequency_penalty=0):
     """Hugging Face Inference API chat completion for Llama models."""
     try:
         # Extract model name from the "hf:" prefix
@@ -370,15 +379,17 @@ def huggingface(messages, model, json_mode=False, temperature=0.7, frequency_pen
         
         # Create client with your token
         client = InferenceClient(token=os.getenv('HF_TOKEN'))
-        
+
         # Call the model
-        response = client.text_generation(
-            formatted_prompt,
-            model=model,
-            temperature=temperature,
-            max_new_tokens=4096,
-            repetition_penalty=1.0 + frequency_penalty
-        )
+        params = {
+            'model': model,
+            'max_new_tokens': 4096,
+            'repetition_penalty': 1.0 + frequency_penalty
+        }
+        if temperature is not None:
+            params['temperature'] = temperature
+
+        response = client.text_generation(formatted_prompt, **params)
         
         return clean_response(response) if json_mode else response
     except Exception as e:
@@ -386,7 +397,7 @@ def huggingface(messages, model, json_mode=False, temperature=0.7, frequency_pen
         return DEFAULT_RESPONSE
 
 def call_llm(messages, model='gpt-4o-mini', json_mode=False,
-                  temperature=0.7, frequency_penalty=0):
+                  temperature=None, frequency_penalty=0):
     """Main entry point for LLM calls."""
     try:
         model = model.strip() if model else DEFAULT_MODEL
