@@ -2,101 +2,63 @@
 
 ## Scripts Overview
 
-All three scripts now support command-line arguments and are **fully decoupled** - they have independent configurations.
-
----
-
-## minimal_test.py
-
-Test a single persona format against Wave 4 ground truth.
-
-### Basic Usage
-```bash
-python minimal_test.py
-```
-
-### With Options
-```bash
-python minimal_test.py --model sonnet-4.5 --personas 10 --questions 5 --format demographics_big5
-```
-
-### All Options
-```
---model MODEL           LLM model to use (default: gemini-2.5-flash-lite)
---personas N            Number of personas to test (default: 5)
---questions N           Number of questions per persona (default: 3)
---format FORMAT         Persona format to use (default: summary)
---data-dir PATH         Data directory (default: ../Twin-2K-500)
-```
-
-### Examples
-
-**Test with GPT-5 and 20 personas:**
-```bash
-python minimal_test.py --model gpt-5 --personas 20
-```
-
-**Test demographics-only format:**
-```bash
-python minimal_test.py --format demographics_only --questions 10
-```
-
-**Full test (all personas, all questions):**
-```bash
-python minimal_test.py --personas 2058 --questions 63
-```
+Three main scripts for experimentation:
+1. **compare_formats.py** - Main testing script (models × formats)
+2. **inspect_formats.py** - Preview persona formats
+3. **test_llm_matching.py** - Debug answer matching
 
 ---
 
 ## compare_formats.py
 
-Compare multiple persona formats and/or models in one run.
+Main testing script. Compare multiple persona formats and/or models in one run.
 
 ### Basic Usage
 ```bash
 python compare_formats.py
 ```
 
-### With Options
-```bash
-python compare_formats.py --model haiku-4.5 --personas 10 --questions 5 --formats empty,demographics_only,summary
-```
-
 ### All Options
 ```
---model MODEL           LLM model to use (default: gemini-2.5-flash-lite)
---models MODEL1,MODEL2,...  Comma-separated list of models to test (overrides --model)
---personas N            Number of personas to test (default: 5)
---questions N           Number of questions per persona (default: 3)
---formats FORMAT1,FORMAT2,...  Comma-separated list of formats to test
---data-dir PATH         Data directory (default: ../Twin-2K-500)
+--models MODEL1,MODEL2,...  Comma-separated list of models (default: gemini-2.5-flash-lite)
+--formats FMT1,FMT2,...     Comma-separated list of formats (default: summary)
+--personas N                Number of personas to test (default: 5)
+--questions N               Questions per persona (default: 3)
+--block BLOCK               Filter by block name (case-insensitive partial match)
+--data-dir PATH             Data directory (default: ../Twin-2K-500)
 ```
 
 ### Examples
 
-**Compare just two formats:**
+**Single model, single format (default):**
 ```bash
-python compare_formats.py --formats empty,summary
+python compare_formats.py
+# Uses: gemini-2.5-flash-lite, summary format, 5 personas, 3 questions
 ```
 
-**Compare multiple models with single format:**
+**Compare formats:**
 ```bash
-python compare_formats.py --models gemini-2.5-flash-lite,haiku-4.5,sonnet-4.5 --formats summary
+python compare_formats.py --formats empty,demographics_big5,summary
 ```
 
-**Compare models AND formats (matrix comparison):**
+**Compare models:**
 ```bash
-python compare_formats.py --models gemini-2.5-flash-lite,haiku-4.5 --formats empty,demographics_big5,summary
+python compare_formats.py --models gemini-2.5-flash-lite,haiku-4.5,sonnet-4.5
 ```
 
-**Test all formats with a better model:**
+**Matrix comparison (models × formats):**
 ```bash
-python compare_formats.py --model sonnet-4.5 --formats empty,demographics_only,demographics_big5,demographics_qualitative,summary
+python compare_formats.py --models gemini-2.5-flash-lite,haiku-4.5 --formats empty,summary
 ```
 
-**Quick comparison with 3 personas:**
+**Test specific question blocks:**
 ```bash
-python compare_formats.py --personas 3 --questions 2
+python compare_formats.py --block "False consensus" --questions 10
+```
+
+**Large-scale test:**
+```bash
+python compare_formats.py --personas 100 --questions 20
 ```
 
 ---
@@ -147,6 +109,43 @@ python inspect_formats.py --persona-id 1348 demographics_big5
 **Show more of all formats:**
 ```bash
 python inspect_formats.py --max-chars 1000
+```
+
+---
+
+## test_llm_matching.py
+
+Debug answer matching logic with real LLM responses. Shows detailed output for each question including predicted vs. ground truth answers.
+
+### Basic Usage
+```bash
+python test_llm_matching.py
+```
+
+### All Options
+```
+--model MODEL          LLM model to use (default: gemini-2.5-flash-lite)
+--personas N           Number of personas to test (default: 2)
+--questions N          Questions per persona (default: 5)
+--format FORMAT        Persona format to use (default: demographics_big5)
+--data-dir PATH        Data directory (default: ../Twin-2K-500)
+```
+
+### Examples
+
+**Test with better model:**
+```bash
+python test_llm_matching.py --model sonnet-4.5
+```
+
+**Test with full summary format:**
+```bash
+python test_llm_matching.py --format summary --personas 3 --questions 10
+```
+
+**Quick debug test:**
+```bash
+python test_llm_matching.py --personas 1 --questions 3
 ```
 
 ---

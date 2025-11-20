@@ -23,12 +23,23 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from persona_formatter import format_persona, PERSONA_FORMATS
-from minimal_test import load_persona_data
 
 # Default configuration
 DEFAULT_DATA_DIR = Path(__file__).parent.parent / "Twin-2K-500"
 DEFAULT_MAX_CHARS_ALL = 300
 DEFAULT_MAX_CHARS_SINGLE = 2000
+
+
+def load_persona_data(data_dir, num_personas=1):
+    """Load persona summaries from parquet files."""
+    persona_chunks = list((data_dir / "full_persona/chunks").glob("*.parquet"))
+
+    if not persona_chunks:
+        raise FileNotFoundError(f"No parquet files found in {data_dir / 'full_persona/chunks'}")
+
+    # Load first chunk and get first N personas
+    df = pd.read_parquet(persona_chunks[0])
+    return df.head(num_personas)
 
 
 def inspect_format(persona_row, format_name, max_chars=500):

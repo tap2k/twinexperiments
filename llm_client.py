@@ -25,6 +25,7 @@ MODEL_MAP = [
     {'shortName': 'opus-4.1', 'provider': 'anthropic', 'modelName': 'claude-opus-4-1', 'inputCost': 15.0, 'outputCost': 75.0, 'maxChars': 800000},
 
     # Google models (costs per 1M tokens)
+    {'shortName': 'gemini-3-pro', 'provider': 'google', 'modelName': 'gemini-3-pro-preview', 'inputCost': 2.0, 'outputCost': 12.0, 'maxChars': 1000000},
     {'shortName': 'gemini-2.5-pro', 'provider': 'google', 'modelName': 'gemini-2.5-pro', 'inputCost': 1.25, 'outputCost': 10.0, 'maxChars': 1000000},
     {'shortName': 'gemini-2.5-flash', 'provider': 'google', 'modelName': 'gemini-2.5-flash', 'inputCost': 0.15, 'outputCost': 2.50, 'maxChars': 1000000},
     {'shortName': 'gemini-2.5-flash-lite', 'provider': 'google', 'modelName': 'gemini-2.5-flash-lite', 'inputCost': 0.1, 'outputCost': 0.4, 'maxChars': 1000000},

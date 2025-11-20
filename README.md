@@ -15,17 +15,17 @@ pip install -r requirements.txt
 
 Copy API keys to `.env` file.
 
-### Run Minimal Test
+### Run Tests
 
-Test with default settings (5 personas, full summary format):
+Test with default settings (5 personas, 3 questions, summary format, gemini-2.5-flash-lite):
 
 ```bash
-python minimal_test.py
+python compare_formats.py
 ```
 
 ## Persona Formats
 
-The system supports flexible persona formatting. Change `PERSONA_FORMAT` in `minimal_test.py`:
+The system supports flexible persona formatting via the `--formats` parameter:
 
 ### Minimal Formats
 - `empty` - No persona information (baseline)
@@ -49,38 +49,49 @@ The system supports flexible persona formatting. Change `PERSONA_FORMAT` in `min
 - `demographics_cognitive_economic`
 - `all_scores_no_demographics`
 
-## Compare Persona Formats and Models
+## CLI Options
 
-Test multiple formats and/or models to see their impact on accuracy:
+All experiments are run through `compare_formats.py` with flexible CLI options:
 
 ```bash
-# Compare formats only
+# Basic usage with defaults
 python compare_formats.py
 
-# Compare models only
-python compare_formats.py --models gemini-2.5-flash-lite,haiku-4.5,sonnet-4.5 --formats summary
+# Test specific model and format
+python compare_formats.py --models sonnet-4.5 --formats demographics_big5
 
-# Compare both (matrix comparison)
-python compare_formats.py --models gemini-2.5-flash-lite,haiku-4.5 --formats empty,demographics_big5,summary
+# Compare multiple formats
+python compare_formats.py --formats empty,demographics_big5,summary
+
+# Compare multiple models
+python compare_formats.py --models gemini-2.5-flash-lite,haiku-4.5,sonnet-4.5
+
+# Matrix comparison (models × formats)
+python compare_formats.py --models gemini-2.5-flash-lite,haiku-4.5 --formats empty,summary
+
+# More personas and questions
+python compare_formats.py --personas 20 --questions 10
+
+# Filter by question block
+python compare_formats.py --block "False consensus"
+
+# All options combined
+python compare_formats.py \
+  --models gemini-2.5-flash-lite,sonnet-4.5 \
+  --formats demographics_big5,summary \
+  --personas 10 \
+  --questions 5 \
+  --block "anchoring"
 ```
 
-This will run tests with different combinations and output a comparison table.
+### Available Options
 
-## Configuration
-
-Edit constants at the top of `minimal_test.py`:
-
-```python
-NUM_PERSONAS = 5                      # Number of personas to test
-MODEL = "gemini-2.5-flash-lite"       # LLM model to use
-PERSONA_FORMAT = "summary"            # Persona format (see above)
-DATA_DIR = Path(__file__).parent.parent / "Twin-2K-500"  # Data location
-```
-
-To test different numbers of questions per persona, change line 247:
-```python
-for q_idx, q_data in enumerate(questions[:3]):  # Change :3 to :10, etc.
-```
+- `--models` - Comma-separated list of models (default: gemini-2.5-flash-lite)
+- `--formats` - Comma-separated list of persona formats (default: summary)
+- `--personas` - Number of personas to test (default: 5)
+- `--questions` - Questions per persona (default: 3)
+- `--block` - Filter questions by block name (case-insensitive partial match)
+- `--data-dir` - Data directory path (default: ../Twin-2K-500)
 
 ## Available Models
 
@@ -112,11 +123,45 @@ Available components:
 - `personality` - Personality traits and values
 - `wellbeing` - Anxiety and depression scores
 
+## Additional Tools
+
+### Inspect Persona Formats
+
+Preview what each format contains before running experiments:
+
+```bash
+# Show all formats for default persona
+python inspect_formats.py
+
+# Show specific format
+python inspect_formats.py demographics_big5
+
+# Show different persona
+python inspect_formats.py --persona-id 1348 summary
+
+# Show more characters
+python inspect_formats.py --max-chars 2000 summary
+```
+
+### Test Answer Matching
+
+Debug answer matching with real LLM responses:
+
+```bash
+# Test with defaults
+python test_llm_matching.py
+
+# Test with specific model and format
+python test_llm_matching.py --model sonnet-4.5 --format summary
+
+# Test more extensively
+python test_llm_matching.py --personas 5 --questions 10
+```
+
 ## Output
 
 Results are saved to `data/` directory:
-- `minimal_test_results.csv` - Detailed predictions from minimal_test.py
-- `format_comparison_results.csv` - Format/model comparison details
-- `format_comparison_summary.csv` - Format/model comparison summary
-- `comparison_results_{timestamp}.csv` - Timestamped results when comparing multiple models
-- `comparison_summary_{timestamp}.csv` - Timestamped summary when comparing multiple models
+- `format_comparison_results.csv` - Detailed predictions (single model)
+- `format_comparison_summary.csv` - Summary table (single model)
+- `comparison_results_{timestamp}.csv` - Detailed results (multiple models)
+- `comparison_summary_{timestamp}.csv` - Summary table (multiple models)

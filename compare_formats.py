@@ -5,11 +5,12 @@ Usage:
     python compare_formats.py [options]
 
 Options:
-    --model MODEL           LLM model to use (default: gemini-2.5-flash-lite)
-    --models MODEL1,MODEL2,...  Comma-separated list of models to test (overrides --model)
-    --personas N            Number of personas to test (default: 5)
-    --questions N           Number of questions per persona (default: 3)
-    --formats FORMAT1,FORMAT2,...  Comma-separated list of formats to test
+    --models MODEL1,MODEL2,...  Comma-separated list of models to test (default: gemini-2.5-flash-lite)
+    --personas N                Number of personas to test (default: 5)
+    --questions N               Number of questions per persona (default: 3)
+    --formats FORMAT1,FORMAT2,...  Comma-separated list of formats to test (default: summary)
+    --block BLOCK               Filter questions by block name (case-insensitive partial match)
+    --data-dir PATH             Data directory (default: ../Twin-2K-500)
 """
 
 import argparse
@@ -19,10 +20,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from minimal_test import (
-    extract_wave4_questions,
-    create_prompt,
-)
+from utils import extract_wave4_questions, create_prompt
 from llm_client import call_llm, calculate_cost
 from persona_formatter import format_persona
 
@@ -102,11 +100,14 @@ def test_format(format_name, persona_df, wave4_df, model, max_questions=3, block
             continue
 
         # Test first N questions
-        for q_data in questions[:max_questions]:
+        for q_idx, q_data in enumerate(questions[:max_questions], 1):
             question_text = q_data['question_text']
             question_type = q_data['question_type']
             ground_truth = q_data['answer']
             options = q_data.get('options', [])
+            block_name = q_data.get('block_name', 'Unknown')
+
+            print(f"  [{pid}] Q{q_idx}/{max_questions} ({block_name}, {question_type}): {question_text[:60]}...")
 
             prompt = create_prompt(persona_text, question_text, question_type, options)
 
@@ -114,7 +115,6 @@ def test_format(format_name, persona_df, wave4_df, model, max_questions=3, block
                 llm_response = call_llm(
                     model=model,
                     messages=[{"role": "user", "content": prompt}],
-                    temperature=0.0
                 )
 
                 predicted_answer = llm_response.strip()
@@ -126,6 +126,7 @@ def test_format(format_name, persona_df, wave4_df, model, max_questions=3, block
                 total_cost += cost_info['total_cost']
 
                 if not predicted_answer:
+                    print(f"    ⚠ Empty response")
                     continue
 
                 # Compare with ground truth
@@ -140,6 +141,10 @@ def test_format(format_name, persona_df, wave4_df, model, max_questions=3, block
                 total_questions += 1
                 if is_correct:
                     correct_predictions += 1
+
+                # Log result
+                status = "✓" if is_correct else "✗"
+                print(f"    {status} Predicted: '{predicted_answer}' | Ground Truth: '{ground_truth}'")
 
                 results.append({
                     'model': model,
@@ -174,10 +179,8 @@ def test_format(format_name, persona_df, wave4_df, model, max_questions=3, block
 def main():
     """Compare persona formats and/or models."""
     parser = argparse.ArgumentParser(description='Compare persona formats and/or models')
-    parser.add_argument('--model', type=str, default=DEFAULT_MODEL,
-                        help=f'LLM model to use (default: {DEFAULT_MODEL})')
-    parser.add_argument('--models', type=str, default=None,
-                        help='Comma-separated list of models to test (overrides --model)')
+    parser.add_argument('--models', type=str, default=DEFAULT_MODEL,
+                        help=f'Comma-separated list of models to test (default: {DEFAULT_MODEL})')
     parser.add_argument('--personas', type=int, default=DEFAULT_NUM_PERSONAS,
                         help=f'Number of personas to test (default: {DEFAULT_NUM_PERSONAS})')
     parser.add_argument('--questions', type=int, default=DEFAULT_MAX_QUESTIONS,
@@ -197,11 +200,8 @@ def main():
     else:
         formats_to_test = DEFAULT_FORMATS
 
-    # Parse models
-    if args.models:
-        models_to_test = [m.strip() for m in args.models.split(',')]
-    else:
-        models_to_test = [args.model]
+    # Parse models (comma-separated list)
+    models_to_test = [m.strip() for m in args.models.split(',')]
 
     data_dir = Path(args.data_dir)
 
