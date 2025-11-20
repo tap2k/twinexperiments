@@ -125,8 +125,13 @@ def extract_answer(response: str) -> str:
     return None
 
 
-def extract_wave4_questions(wave4_json_str):
-    """Extract questions from Wave 4 JSON data with answer options and block categories."""
+def extract_wave4_questions(wave4_json_str, block_filter=None):
+    """Extract questions from Wave 4 JSON data with answer options and block categories.
+
+    Args:
+        wave4_json_str: JSON string containing Wave 4 questions
+        block_filter: Optional block name to filter questions (case-insensitive partial match)
+    """
     import json
 
     if not wave4_json_str:
@@ -140,6 +145,10 @@ def extract_wave4_questions(wave4_json_str):
     for block in data:
         if block.get('ElementType') == 'Block':
             block_name = block.get('BlockName', 'Unknown')
+
+            # Skip block if filter is specified and doesn't match
+            if block_filter and block_filter.lower() not in block_name.lower():
+                continue
 
             # Iterate through questions in the block
             for question in block.get('Questions', []):
@@ -197,8 +206,17 @@ def extract_wave4_questions(wave4_json_str):
 
 def run_minimal_test(model=DEFAULT_MODEL, persona_format=DEFAULT_PERSONA_FORMAT,
                      num_personas=DEFAULT_NUM_PERSONAS, max_questions=DEFAULT_MAX_QUESTIONS,
-                     data_dir=DEFAULT_DATA_DIR):
-    """Run minimal test with configurable parameters."""
+                     data_dir=DEFAULT_DATA_DIR, block_filter=None):
+    """Run minimal test with configurable parameters.
+
+    Args:
+        model: LLM model to use
+        persona_format: Persona format to use
+        num_personas: Number of personas to test
+        max_questions: Maximum questions per persona
+        data_dir: Data directory path
+        block_filter: Optional block name to filter questions
+    """
     print("=" * 80)
     print("TWIN-2K MINIMAL VALIDATION TEST")
     print("=" * 80)
@@ -207,6 +225,8 @@ def run_minimal_test(model=DEFAULT_MODEL, persona_format=DEFAULT_PERSONA_FORMAT,
     print(f"  Persona format: {persona_format}")
     print(f"  Number of personas: {num_personas}")
     print(f"  Questions per persona: {max_questions}")
+    if block_filter:
+        print(f"  Block filter: {block_filter}")
     print(f"  Data directory: {data_dir}")
     print()
 
@@ -253,7 +273,7 @@ def run_minimal_test(model=DEFAULT_MODEL, persona_format=DEFAULT_PERSONA_FORMAT,
             continue
 
         # Extract all questions and answers
-        questions = extract_wave4_questions(wave4_json)
+        questions = extract_wave4_questions(wave4_json, block_filter=block_filter)
 
         if not questions:
             print(f"  WARNING: Could not parse Wave 4 questions for PID {pid}")
@@ -406,6 +426,8 @@ def main():
                         help=f'Number of questions per persona (default: {DEFAULT_MAX_QUESTIONS})')
     parser.add_argument('--format', type=str, default=DEFAULT_PERSONA_FORMAT,
                         help=f'Persona format to use (default: {DEFAULT_PERSONA_FORMAT})')
+    parser.add_argument('--block', type=str, default=None,
+                        help='Filter questions by block name (case-insensitive partial match)')
     parser.add_argument('--data-dir', type=str, default=str(DEFAULT_DATA_DIR),
                         help=f'Data directory (default: {DEFAULT_DATA_DIR})')
 
@@ -416,7 +438,8 @@ def main():
         persona_format=args.format,
         num_personas=args.personas,
         max_questions=args.questions,
-        data_dir=Path(args.data_dir)
+        data_dir=Path(args.data_dir),
+        block_filter=args.block
     )
 
 

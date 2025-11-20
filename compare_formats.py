@@ -35,10 +35,6 @@ DEFAULT_MAX_QUESTIONS = 3
 
 # Default formats to compare
 DEFAULT_FORMATS = [
-    'empty',
-    'demographics_only',
-    'demographics_big5',
-    'demographics_big5_qualitative',
     'summary',
 ]
 
@@ -67,8 +63,17 @@ def load_wave4_ground_truth(data_dir):
     return pd.concat(dfs, ignore_index=True)
 
 
-def test_format(format_name, persona_df, wave4_df, model, max_questions=3):
-    """Test a single persona format with a specific model and return results."""
+def test_format(format_name, persona_df, wave4_df, model, max_questions=3, block_filter=None):
+    """Test a single persona format with a specific model and return results.
+
+    Args:
+        format_name: Name of the persona format
+        persona_df: DataFrame with persona data
+        wave4_df: DataFrame with Wave 4 ground truth
+        model: LLM model to use
+        max_questions: Maximum questions per persona
+        block_filter: Optional block name to filter questions
+    """
     print(f"\nTesting format: {format_name} | model: {model}")
     print("-" * 80)
 
@@ -92,7 +97,7 @@ def test_format(format_name, persona_df, wave4_df, model, max_questions=3):
         if not wave4_json:
             continue
 
-        questions = extract_wave4_questions(wave4_json)
+        questions = extract_wave4_questions(wave4_json, block_filter=block_filter)
         if not questions:
             continue
 
@@ -179,6 +184,8 @@ def main():
                         help=f'Number of questions per persona (default: {DEFAULT_MAX_QUESTIONS})')
     parser.add_argument('--formats', type=str, default=None,
                         help=f'Comma-separated list of formats (default: {",".join(DEFAULT_FORMATS)})')
+    parser.add_argument('--block', type=str, default=None,
+                        help='Filter questions by block name (case-insensitive partial match)')
     parser.add_argument('--data-dir', type=str, default=str(DEFAULT_DATA_DIR),
                         help=f'Data directory (default: {DEFAULT_DATA_DIR})')
 
@@ -205,6 +212,8 @@ def main():
     print(f"Formats: {', '.join(formats_to_test)}")
     print(f"Personas: {args.personas}")
     print(f"Questions per persona: {args.questions}")
+    if args.block:
+        print(f"Block filter: {args.block}")
     print(f"Data directory: {data_dir}")
     print(f"\nTotal combinations to test: {len(models_to_test)} models × {len(formats_to_test)} formats = {len(models_to_test) * len(formats_to_test)} tests")
     print()
@@ -221,7 +230,7 @@ def main():
 
     for model in models_to_test:
         for format_name in formats_to_test:
-            result = test_format(format_name, persona_df, wave4_df, model, args.questions)
+            result = test_format(format_name, persona_df, wave4_df, model, args.questions, block_filter=args.block)
             all_results.extend(result['results'])
             summary_stats.append({
                 'model': model,
