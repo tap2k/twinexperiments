@@ -107,7 +107,8 @@ def test_format(format_name, persona_df, wave4_df, model, max_questions=3, block
             options = q_data.get('options', [])
             block_name = q_data.get('block_name', 'Unknown')
 
-            print(f"  [{pid}] Q{q_idx}/{max_questions} ({block_name}, {question_type}): {question_text[:60]}...")
+            print(f"  [{pid}] Q{q_idx}/{max_questions} ({block_name}, {question_type}):")
+            print(f"    Question: {question_text}")
 
             prompt = create_prompt(persona_text, question_text, question_type, options)
 

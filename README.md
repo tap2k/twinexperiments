@@ -158,6 +158,24 @@ python test_llm_matching.py --model sonnet-4.5 --format summary
 python test_llm_matching.py --personas 5 --questions 10
 ```
 
+### Dump Questions
+
+Extract all questions from the dataset to CSV for analysis:
+
+```bash
+# List all available blocks
+python dump_questions.py --list-blocks
+
+# Dump all questions
+python dump_questions.py
+
+# Dump questions from a specific block
+python dump_questions.py --block "False consensus"
+
+# Dump from limited personas
+python dump_questions.py --personas 10 --output data/sample_questions.csv
+```
+
 ## Output
 
 Results are saved to `data/` directory:

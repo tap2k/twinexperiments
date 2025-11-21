@@ -2,10 +2,11 @@
 
 ## Scripts Overview
 
-Three main scripts for experimentation:
-1. **compare_formats.py** - Main testing script (models × formats)
+Four main scripts for experimentation:
+1. **compare_formats.py** - Main testing script (models × formats matrix)
 2. **inspect_formats.py** - Preview persona formats
 3. **test_llm_matching.py** - Debug answer matching
+4. **dump_questions.py** - Extract questions to CSV
 
 ---
 
@@ -146,6 +147,56 @@ python test_llm_matching.py --format summary --personas 3 --questions 10
 **Quick debug test:**
 ```bash
 python test_llm_matching.py --personas 1 --questions 3
+```
+
+---
+
+## dump_questions.py
+
+Extract all questions from the dataset to CSV for analysis or inspection.
+
+### Basic Usage
+```bash
+python dump_questions.py
+```
+
+Dumps all questions from all personas to `data/questions_dump.csv`.
+
+### All Options
+```
+--block BLOCK          Filter by block name (case-insensitive partial match)
+--output FILE          Output CSV file (default: data/questions_dump.csv)
+--personas N           Number of personas to extract from (default: all)
+--data-dir PATH        Data directory (default: ../Twin-2K-500)
+--list-blocks          List all unique block names and exit
+```
+
+### Examples
+
+**List all available question blocks:**
+```bash
+python dump_questions.py --list-blocks
+```
+
+**Dump all questions:**
+```bash
+python dump_questions.py
+```
+
+**Dump questions from specific block:**
+```bash
+python dump_questions.py --block "False consensus"
+python dump_questions.py --block anchoring --output data/anchoring_questions.csv
+```
+
+**Dump from limited personas:**
+```bash
+python dump_questions.py --personas 100
+```
+
+**Combine options:**
+```bash
+python dump_questions.py --block "Product" --personas 50 --output data/product_questions.csv
 ```
 
 ---
