@@ -8,34 +8,35 @@ from huggingface_hub import InferenceClient
 
 MODEL_MAP = [
     # OpenAI models (costs per 1M tokens)
-    {'shortName': 'o3', 'provider': 'openai', 'modelName': 'o3', 'inputCost': 2.0, 'outputCost': 8.0, 'maxChars': 400000},
-    {'shortName': 'o4-mini', 'provider': 'openai', 'modelName': 'o4-mini', 'inputCost': 4.0, 'outputCost': 16.0, 'maxChars': 400000},
-    {'shortName': 'gpt-5', 'provider': 'openai', 'modelName': 'gpt-5', 'inputCost': 1.25, 'outputCost': 10.0, 'maxChars': 400000},
+    {'shortName': 'gpt-5.4', 'provider': 'openai', 'modelName': 'gpt-5.4', 'inputCost': 2.5, 'outputCost': 15.0, 'maxChars': 512000},
+    {'shortName': 'gpt-5.2', 'provider': 'openai', 'modelName': 'gpt-5.2', 'inputCost': 1.25, 'outputCost': 10.0, 'maxChars': 512000},
     {'shortName': 'gpt-5-mini', 'provider': 'openai', 'modelName': 'gpt-5-mini', 'inputCost': 0.25, 'outputCost': 2.0, 'maxChars': 400000},
     {'shortName': 'gpt-5-nano', 'provider': 'openai', 'modelName': 'gpt-5-nano', 'inputCost': 0.05, 'outputCost': 0.40, 'maxChars': 400000},
     {'shortName': 'gpt-4o', 'provider': 'openai', 'modelName': 'gpt-4o', 'inputCost': 2.5, 'outputCost': 10.0, 'maxChars': 512000},
-    {'shortName': 'gpt-4o-mini', 'provider': 'openai', 'modelName': 'gpt-4o-mini', 'inputCost': 0.15, 'outputCost': 0.6, 'maxChars': 512000},
-    {'shortName': 'gpt-oss-120b', 'provider': 'deepinfra', 'modelName': 'openai/gpt-oss-120b', 'inputCost': 0.05, 'outputCost': 0.24, 'maxChars': 512000},
-    {'shortName': 'gpt-oss-20b', 'provider': 'deepinfra', 'modelName': 'openai/gpt-oss-20b', 'inputCost': 0.03, 'outputCost': 0.14, 'maxChars': 512000},
+    {'shortName': 'o3', 'provider': 'openai', 'modelName': 'o3', 'inputCost': 2.0, 'outputCost': 8.0, 'maxChars': 400000},
+    {'shortName': 'o4-mini', 'provider': 'openai', 'modelName': 'o4-mini', 'inputCost': 4.0, 'outputCost': 16.0, 'maxChars': 400000},
+    {'shortName': 'gpt-oss-120b', 'provider': 'deepinfra', 'modelName': 'openai/gpt-oss-120b', 'inputCost': 0.05, 'outputCost': 0.45, 'maxChars': 512000},
+    {'shortName': 'gpt-oss-20b', 'provider': 'deepinfra', 'modelName': 'openai/gpt-oss-20b', 'inputCost': 0.04, 'outputCost': 0.15, 'maxChars': 512000},
 
     # Anthropic models (costs per 1M tokens)
-    {'shortName': 'sonnet-4.5', 'provider': 'anthropic', 'modelName': 'claude-sonnet-4-5', 'inputCost': 3.0, 'outputCost': 15.0, 'maxChars': 800000},
+    {'shortName': 'opus-4.6', 'provider': 'anthropic', 'modelName': 'claude-opus-4-6', 'inputCost': 5.0, 'outputCost': 25.0, 'maxChars': 800000},
+    {'shortName': 'sonnet-4.6', 'provider': 'anthropic', 'modelName': 'claude-sonnet-4-6', 'inputCost': 3.0, 'outputCost': 15.0, 'maxChars': 800000},
     {'shortName': 'haiku-4.5', 'provider': 'anthropic', 'modelName': 'claude-haiku-4-5', 'inputCost': 1.0, 'outputCost': 5.0, 'maxChars': 800000},
-    {'shortName': 'opus-4', 'provider': 'anthropic', 'modelName': 'claude-opus-4', 'inputCost': 15.0, 'outputCost': 75.0, 'maxChars': 800000},
-    {'shortName': 'opus-4.1', 'provider': 'anthropic', 'modelName': 'claude-opus-4-1', 'inputCost': 15.0, 'outputCost': 75.0, 'maxChars': 800000},
 
     # Google models (costs per 1M tokens)
+    {'shortName': 'gemini-3.1-pro', 'provider': 'google', 'modelName': 'gemini-3.1-pro-preview', 'inputCost': 2.0, 'outputCost': 12.0, 'maxChars': 1000000},
+    {'shortName': 'gemini-3.1-flash-lite', 'provider': 'google', 'modelName': 'gemini-3.1-flash-lite-preview', 'inputCost': 0.25, 'outputCost': 1.5, 'maxChars': 1000000},
     {'shortName': 'gemini-3-pro', 'provider': 'google', 'modelName': 'gemini-3-pro-preview', 'inputCost': 2.0, 'outputCost': 12.0, 'maxChars': 1000000},
-    {'shortName': 'gemini-2.5-pro', 'provider': 'google', 'modelName': 'gemini-2.5-pro', 'inputCost': 1.25, 'outputCost': 10.0, 'maxChars': 1000000},
+    {'shortName': 'gemini-3-flash', 'provider': 'google', 'modelName': 'gemini-3-flash-preview', 'inputCost': 0.5, 'outputCost': 3.0, 'maxChars': 1000000},
     {'shortName': 'gemini-2.5-flash', 'provider': 'google', 'modelName': 'gemini-2.5-flash', 'inputCost': 0.15, 'outputCost': 2.50, 'maxChars': 1000000},
-    {'shortName': 'gemini-2.5-flash-lite', 'provider': 'google', 'modelName': 'gemini-2.5-flash-lite', 'inputCost': 0.1, 'outputCost': 0.4, 'maxChars': 1000000},
-    {'shortName': 'gemini-2-flash', 'provider': 'google', 'modelName': 'gemini-2.0-flash', 'inputCost': 0.1, 'outputCost': 0.4, 'maxChars': 4000000},
+    {'shortName': 'gemini-2.5-flash-lite', 'provider': 'google', 'modelName': 'gemini-2.5-flash-lite', 'inputCost': 0.10, 'outputCost': 0.40, 'maxChars': 1000000},
 
     # xAI models (costs per 1M tokens)
+    {'shortName': 'grok-4.20-beta-reasoning', 'provider': 'xai', 'modelName': 'grok-4.20-beta-0309-reasoning', 'inputCost': 2.0, 'outputCost': 6.0, 'maxChars': 2000000},
+    {'shortName': 'grok-4.20-beta', 'provider': 'xai', 'modelName': 'grok-4.20-beta-0309-non-reasoning', 'inputCost': 2.0, 'outputCost': 2.0, 'maxChars': 2000000},
     {'shortName': 'grok-4', 'provider': 'xai', 'modelName': 'grok-4', 'inputCost': 3.0, 'outputCost': 15.0, 'maxChars': 1024000},
-    {'shortName': 'grok-4-fast-reasoning', 'provider': 'xai', 'modelName': 'grok-4-fast-reasoning', 'inputCost': 0.20, 'outputCost': 0.50, 'maxChars': 8000000},
-    {'shortName': 'grok-4-fast-non-reasoning', 'provider': 'xai', 'modelName': 'grok-4-fast-non-reasoning', 'inputCost': 0.20, 'outputCost': 0.50, 'maxChars': 8000000},
-    {'shortName': 'grok-3', 'provider': 'xai', 'modelName': 'grok-3', 'inputCost': 3.0, 'outputCost': 15.0, 'maxChars': 4000000},
+    {'shortName': 'grok-4-1-fast-reasoning', 'provider': 'xai', 'modelName': 'grok-4-1-fast-reasoning', 'inputCost': 0.20, 'outputCost': 0.50, 'maxChars': 8000000},
+    {'shortName': 'grok-4-1-fast-non-reasoning', 'provider': 'xai', 'modelName': 'grok-4-1-fast-non-reasoning', 'inputCost': 0.20, 'outputCost': 0.50, 'maxChars': 8000000},
 
     # Meta models via DeepInfra (costs per 1M tokens)
     {'shortName': 'llama-4-maverick', 'provider': 'deepinfra', 'modelName': 'meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8', 'inputCost': 0.20, 'outputCost': 0.60, 'maxChars': 2048000},
@@ -43,17 +44,36 @@ MODEL_MAP = [
     {'shortName': 'llama-3.3-70b', 'provider': 'deepinfra', 'modelName': 'meta-llama/Llama-3.3-70B-Instruct', 'inputCost': 0.23, 'outputCost': 0.40, 'maxChars': 524288},
 
     # DeepSeek models (costs per 1M tokens)
-    {'shortName': 'deepseek-v3', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-V3', 'inputCost': 0.27, 'outputCost': 1.10, 'maxChars': 512000},
+    {'shortName': 'deepseek-v3.2-exp', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-V3.2-Exp', 'inputCost': 0.27, 'outputCost': 0.40, 'maxChars': 512000},
+    {'shortName': 'deepseek-v3.1-terminus', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-V3.1-Terminus', 'inputCost': 0.216, 'outputCost': 0.27, 'maxChars': 512000},
     {'shortName': 'deepseek-r1', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-R1-Turbo', 'inputCost': 0.55, 'outputCost': 2.19, 'maxChars': 512000},
 
     # Qwen models (costs per 1M tokens)
+    {'shortName': 'qwen-3-next-80b-instruct', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3-Next-80B-A3B-Instruct', 'inputCost': 0.09, 'outputCost': 1.10, 'maxChars': 1048576},
     {'shortName': 'qwen-3-235b-a22b-think', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3-235B-A22B-Thinking-2507', 'inputCost': 0.30, 'outputCost': 2.90, 'maxChars': 1048576},
     {'shortName': 'qwen-3-235b-a22b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3-235B-A22B-Instruct-2507', 'inputCost': 0.13, 'outputCost': 0.60, 'maxChars': 1048576},
-    {'shortName': 'qwen-3-next-instruct', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3-Next-80B-A3B-Instruct', 'inputCost': 0.14, 'outputCost': 1.10, 'maxChars': 1048576},
     {'shortName': 'qwen-3-32b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3-32B', 'inputCost': 0.10, 'outputCost': 0.30, 'maxChars': 524288},
+    {'shortName': 'qwen-3-30b-a3b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3-30B-A3B', 'inputCost': 0.08, 'outputCost': 0.29, 'maxChars': 524288},
+    {'shortName': 'qwen-3-14b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3-14B', 'inputCost': 0.08, 'outputCost': 0.24, 'maxChars': 131072},
 
     # Moonshot models (costs per 1M tokens)
-    {'shortName': 'kimi-k2', 'provider': 'deepinfra', 'modelName': 'moonshotai/Kimi-K2-Instruct', 'inputCost': 0.55, 'outputCost': 2.10, 'maxChars': 1024000},
+    {'shortName': 'kimi-k2.5', 'provider': 'deepinfra', 'modelName': 'moonshotai/Kimi-K2.5', 'inputCost': 0.45, 'outputCost': 2.25, 'maxChars': 1024000},
+
+    # Zhipu models via DeepInfra (costs per 1M tokens)
+    {'shortName': 'glm-5', 'provider': 'deepinfra', 'modelName': 'zai-org/GLM-5', 'inputCost': 0.80, 'outputCost': 2.56, 'maxChars': 800000},
+    {'shortName': 'glm-4.7', 'provider': 'deepinfra', 'modelName': 'zai-org/GLM-4.7', 'inputCost': 0.40, 'outputCost': 1.75, 'maxChars': 800000},
+    {'shortName': 'glm-4.7-flash', 'provider': 'deepinfra', 'modelName': 'zai-org/GLM-4.7-Flash', 'inputCost': 0.06, 'outputCost': 0.40, 'maxChars': 800000},
+
+    # NVIDIA models via DeepInfra (costs per 1M tokens)
+    {'shortName': 'nemotron-3-nano', 'provider': 'deepinfra', 'modelName': 'nvidia/Nemotron-3-Nano-30B-A3B', 'inputCost': 0.06, 'outputCost': 0.24, 'maxChars': 524288},
+
+    # MiniMax models via DeepInfra (costs per 1M tokens)
+    {'shortName': 'minimax-m2', 'provider': 'deepinfra', 'modelName': 'MiniMaxAI/MiniMax-M2', 'inputCost': 0.254, 'outputCost': 1.02, 'maxChars': 512000},
+
+    # Mistral models via DeepInfra (costs per 1M tokens)
+    {'shortName': 'mistral-small-3.2', 'provider': 'deepinfra', 'modelName': 'mistralai/Mistral-Small-3.2-24B-Instruct-2506', 'inputCost': 0.075, 'outputCost': 0.20, 'maxChars': 512000},
+    {'shortName': 'mistral-small-24b', 'provider': 'deepinfra', 'modelName': 'mistralai/Mistral-Small-24B-Instruct-2501', 'inputCost': 0.05, 'outputCost': 0.08, 'maxChars': 512000},
+    {'shortName': 'mistral-nemo', 'provider': 'deepinfra', 'modelName': 'mistralai/Mistral-Nemo-Instruct-2407', 'inputCost': 0.02, 'outputCost': 0.04, 'maxChars': 512000},
 ]
 
 # Defaults
