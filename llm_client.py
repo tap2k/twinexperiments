@@ -9,9 +9,11 @@ from huggingface_hub import InferenceClient
 MODEL_MAP = [
     # OpenAI models (costs per 1M tokens)
     {'shortName': 'gpt-5.4', 'provider': 'openai', 'modelName': 'gpt-5.4', 'inputCost': 2.5, 'outputCost': 15.0, 'maxChars': 512000},
-    {'shortName': 'gpt-5.2', 'provider': 'openai', 'modelName': 'gpt-5.2', 'inputCost': 1.25, 'outputCost': 10.0, 'maxChars': 512000},
-    {'shortName': 'gpt-5-mini', 'provider': 'openai', 'modelName': 'gpt-5-mini', 'inputCost': 0.25, 'outputCost': 2.0, 'maxChars': 400000},
-    {'shortName': 'gpt-5-nano', 'provider': 'openai', 'modelName': 'gpt-5-nano', 'inputCost': 0.05, 'outputCost': 0.40, 'maxChars': 400000},
+    {'shortName': 'gpt-5.4-mini', 'provider': 'openai', 'modelName': 'gpt-5.4-mini', 'inputCost': 0.75, 'outputCost': 4.50, 'maxChars': 400000},
+    {'shortName': 'gpt-5.4-nano', 'provider': 'openai', 'modelName': 'gpt-5.4-nano', 'inputCost': 0.20, 'outputCost': 1.25, 'maxChars': 400000},
+    {'shortName': 'gpt-5.2', 'provider': 'openai', 'modelName': 'gpt-5.2', 'inputCost': 1.25, 'outputCost': 10.0, 'maxChars': 512000, 'legacy': True},
+    {'shortName': 'gpt-5-mini', 'provider': 'openai', 'modelName': 'gpt-5-mini', 'inputCost': 0.25, 'outputCost': 2.0, 'maxChars': 400000, 'legacy': True},
+    {'shortName': 'gpt-5-nano', 'provider': 'openai', 'modelName': 'gpt-5-nano', 'inputCost': 0.05, 'outputCost': 0.40, 'maxChars': 400000, 'legacy': True},
     {'shortName': 'gpt-4o', 'provider': 'openai', 'modelName': 'gpt-4o', 'inputCost': 2.5, 'outputCost': 10.0, 'maxChars': 512000},
     {'shortName': 'o3', 'provider': 'openai', 'modelName': 'o3', 'inputCost': 2.0, 'outputCost': 8.0, 'maxChars': 400000},
     {'shortName': 'o4-mini', 'provider': 'openai', 'modelName': 'o4-mini', 'inputCost': 4.0, 'outputCost': 16.0, 'maxChars': 400000},
