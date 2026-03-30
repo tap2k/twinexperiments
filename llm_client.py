@@ -51,6 +51,11 @@ MODEL_MAP = [
     {'shortName': 'deepseek-r1', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-R1-Turbo', 'inputCost': 0.55, 'outputCost': 2.19, 'maxChars': 512000},
 
     # Qwen models (costs per 1M tokens)
+    {'shortName': 'qwen-3.5-27b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3.5-27B', 'inputCost': 0.26, 'outputCost': 2.60, 'maxChars': 1048576},
+    {'shortName': 'qwen-3.5-9b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3.5-9B', 'inputCost': 0.04, 'outputCost': 0.20, 'maxChars': 1048576},
+    {'shortName': 'qwen-3.5-4b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3.5-4B', 'inputCost': 0.03, 'outputCost': 0.15, 'maxChars': 1048576},
+    {'shortName': 'qwen-3.5-2b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3.5-2B', 'inputCost': 0.02, 'outputCost': 0.10, 'maxChars': 1048576},
+    {'shortName': 'qwen-3.5-0.8b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3.5-0.8B', 'inputCost': 0.01, 'outputCost': 0.05, 'maxChars': 1048576},
     {'shortName': 'qwen-3-next-80b-instruct', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3-Next-80B-A3B-Instruct', 'inputCost': 0.09, 'outputCost': 1.10, 'maxChars': 1048576},
     {'shortName': 'qwen-3-235b-a22b-think', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3-235B-A22B-Thinking-2507', 'inputCost': 0.30, 'outputCost': 2.90, 'maxChars': 1048576},
     {'shortName': 'qwen-3-235b-a22b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3-235B-A22B-Instruct-2507', 'inputCost': 0.13, 'outputCost': 0.60, 'maxChars': 1048576},
