@@ -71,6 +71,13 @@ MODEL_MAP = [
     {'shortName': 'glm-4.7', 'provider': 'deepinfra', 'modelName': 'zai-org/GLM-4.7', 'inputCost': 0.40, 'outputCost': 1.75, 'maxChars': 800000},
     {'shortName': 'glm-4.7-flash', 'provider': 'deepinfra', 'modelName': 'zai-org/GLM-4.7-Flash', 'inputCost': 0.06, 'outputCost': 0.40, 'maxChars': 800000},
 
+    # Google Gemma models via DeepInfra (costs per 1M tokens)
+    {'shortName': 'gemma-4-31b', 'provider': 'deepinfra', 'modelName': 'google/gemma-4-31B-it', 'inputCost': 0.13, 'outputCost': 0.38, 'maxChars': 1024000},
+    {'shortName': 'gemma-4-26b-a4b', 'provider': 'deepinfra', 'modelName': 'google/gemma-4-26B-A4B-it', 'inputCost': 0.08, 'outputCost': 0.35, 'maxChars': 1024000},
+    {'shortName': 'gemma-3-27b', 'provider': 'deepinfra', 'modelName': 'google/gemma-3-27b-it', 'inputCost': 0.08, 'outputCost': 0.16, 'maxChars': 524288},
+    {'shortName': 'gemma-3-12b', 'provider': 'deepinfra', 'modelName': 'google/gemma-3-12b-it', 'inputCost': 0.04, 'outputCost': 0.13, 'maxChars': 524288},
+    {'shortName': 'gemma-3-4b', 'provider': 'deepinfra', 'modelName': 'google/gemma-3-4b-it', 'inputCost': 0.04, 'outputCost': 0.08, 'maxChars': 524288},
+
     # NVIDIA models via DeepInfra (costs per 1M tokens)
     {'shortName': 'nemotron-3-nano', 'provider': 'deepinfra', 'modelName': 'nvidia/Nemotron-3-Nano-30B-A3B', 'inputCost': 0.06, 'outputCost': 0.24, 'maxChars': 524288},
 
