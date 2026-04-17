@@ -21,7 +21,8 @@ MODEL_MAP = [
     {'shortName': 'gpt-oss-20b', 'provider': 'deepinfra', 'modelName': 'openai/gpt-oss-20b', 'inputCost': 0.04, 'outputCost': 0.15, 'maxChars': 512000},
 
     # Anthropic models (costs per 1M tokens)
-    {'shortName': 'opus-4.6', 'provider': 'anthropic', 'modelName': 'claude-opus-4-6', 'inputCost': 5.0, 'outputCost': 25.0, 'maxChars': 800000},
+    {'shortName': 'opus-4.7', 'provider': 'anthropic', 'modelName': 'claude-opus-4-7', 'inputCost': 5.0, 'outputCost': 25.0, 'maxChars': 800000},
+    {'shortName': 'opus-4.6', 'provider': 'anthropic', 'modelName': 'claude-opus-4-6', 'inputCost': 5.0, 'outputCost': 25.0, 'maxChars': 800000, 'legacy': True},
     {'shortName': 'sonnet-4.6', 'provider': 'anthropic', 'modelName': 'claude-sonnet-4-6', 'inputCost': 3.0, 'outputCost': 15.0, 'maxChars': 800000},
     {'shortName': 'haiku-4.5', 'provider': 'anthropic', 'modelName': 'claude-haiku-4-5', 'inputCost': 1.0, 'outputCost': 5.0, 'maxChars': 800000},
 
