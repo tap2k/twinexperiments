@@ -47,11 +47,15 @@ MODEL_MAP = [
     {'shortName': 'llama-3.3-70b', 'provider': 'deepinfra', 'modelName': 'meta-llama/Llama-3.3-70B-Instruct', 'inputCost': 0.23, 'outputCost': 0.40, 'maxChars': 524288},
 
     # DeepSeek models (costs per 1M tokens)
-    {'shortName': 'deepseek-v3.2-exp', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-V3.2-Exp', 'inputCost': 0.27, 'outputCost': 0.40, 'maxChars': 512000},
-    {'shortName': 'deepseek-v3.1-terminus', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-V3.1-Terminus', 'inputCost': 0.216, 'outputCost': 0.27, 'maxChars': 512000},
+    {'shortName': 'deepseek-v4-pro', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-V4-Pro', 'inputCost': 1.74, 'outputCost': 3.48, 'maxChars': 1000000},
+    {'shortName': 'deepseek-v4-flash', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-V4-Flash', 'inputCost': 0.14, 'outputCost': 0.28, 'maxChars': 1000000},
     {'shortName': 'deepseek-r1', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-R1-Turbo', 'inputCost': 0.55, 'outputCost': 2.19, 'maxChars': 512000},
 
     # Qwen models (costs per 1M tokens)
+    {'shortName': 'qwen-3.5-397b-a17b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3.5-397B-A17B', 'inputCost': 0.54, 'outputCost': 3.40, 'maxChars': 1048576},
+    {'shortName': 'qwen-3.5-122b-a10b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3.5-122B-A10B', 'inputCost': 0.29, 'outputCost': 2.90, 'maxChars': 1048576},
+    {'shortName': 'qwen-3.5-35b-a3b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3.5-35B-A3B', 'inputCost': 0.20, 'outputCost': 0.95, 'maxChars': 1048576},
+    {'shortName': 'qwen-3.6-35b-a3b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3.6-35B-A3B', 'inputCost': 0.20, 'outputCost': 1.00, 'maxChars': 1048576},
     {'shortName': 'qwen-3.5-27b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3.5-27B', 'inputCost': 0.26, 'outputCost': 2.60, 'maxChars': 1048576},
     {'shortName': 'qwen-3.5-9b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3.5-9B', 'inputCost': 0.04, 'outputCost': 0.20, 'maxChars': 1048576},
     {'shortName': 'qwen-3.5-4b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3.5-4B', 'inputCost': 0.03, 'outputCost': 0.15, 'maxChars': 1048576},
@@ -65,10 +69,10 @@ MODEL_MAP = [
     {'shortName': 'qwen-3-14b', 'provider': 'deepinfra', 'modelName': 'Qwen/Qwen3-14B', 'inputCost': 0.08, 'outputCost': 0.24, 'maxChars': 131072},
 
     # Moonshot models (costs per 1M tokens)
-    {'shortName': 'kimi-k2.5', 'provider': 'deepinfra', 'modelName': 'moonshotai/Kimi-K2.5', 'inputCost': 0.45, 'outputCost': 2.25, 'maxChars': 1024000},
+    {'shortName': 'kimi-k2.6', 'provider': 'deepinfra', 'modelName': 'moonshotai/Kimi-K2.6', 'inputCost': 0.75, 'outputCost': 3.50, 'maxChars': 1024000},
 
     # Zhipu models via DeepInfra (costs per 1M tokens)
-    {'shortName': 'glm-5', 'provider': 'deepinfra', 'modelName': 'zai-org/GLM-5', 'inputCost': 0.80, 'outputCost': 2.56, 'maxChars': 800000},
+    {'shortName': 'glm-5.1', 'provider': 'deepinfra', 'modelName': 'zai-org/GLM-5.1', 'inputCost': 1.05, 'outputCost': 3.50, 'maxChars': 800000},
     {'shortName': 'glm-4.7', 'provider': 'deepinfra', 'modelName': 'zai-org/GLM-4.7', 'inputCost': 0.40, 'outputCost': 1.75, 'maxChars': 800000},
     {'shortName': 'glm-4.7-flash', 'provider': 'deepinfra', 'modelName': 'zai-org/GLM-4.7-Flash', 'inputCost': 0.06, 'outputCost': 0.40, 'maxChars': 800000},
 
@@ -78,6 +82,9 @@ MODEL_MAP = [
     {'shortName': 'gemma-3-27b', 'provider': 'deepinfra', 'modelName': 'google/gemma-3-27b-it', 'inputCost': 0.08, 'outputCost': 0.16, 'maxChars': 524288},
     {'shortName': 'gemma-3-12b', 'provider': 'deepinfra', 'modelName': 'google/gemma-3-12b-it', 'inputCost': 0.04, 'outputCost': 0.13, 'maxChars': 524288},
     {'shortName': 'gemma-3-4b', 'provider': 'deepinfra', 'modelName': 'google/gemma-3-4b-it', 'inputCost': 0.04, 'outputCost': 0.08, 'maxChars': 524288},
+
+    # StepFun models via DeepInfra (costs per 1M tokens)
+    {'shortName': 'step-3.5-flash', 'provider': 'deepinfra', 'modelName': 'stepfun-ai/Step-3.5-Flash', 'inputCost': 0.10, 'outputCost': 0.30, 'maxChars': 1048576},
 
     # NVIDIA models via DeepInfra (costs per 1M tokens)
     {'shortName': 'nemotron-3-nano', 'provider': 'deepinfra', 'modelName': 'nvidia/Nemotron-3-Nano-30B-A3B', 'inputCost': 0.06, 'outputCost': 0.24, 'maxChars': 524288},
