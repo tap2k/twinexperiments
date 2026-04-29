@@ -48,8 +48,8 @@ MODEL_MAP = [
     {'shortName': 'llama-3.3-70b', 'provider': 'deepinfra', 'modelName': 'meta-llama/Llama-3.3-70B-Instruct', 'inputCost': 0.23, 'outputCost': 0.40, 'maxChars': 524288},
 
     # DeepSeek models (costs per 1M tokens)
-    {'shortName': 'deepseek-v4-pro', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-V4-Pro', 'inputCost': 1.74, 'outputCost': 3.48, 'maxChars': 1000000},
-    {'shortName': 'deepseek-v4-flash', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-V4-Flash', 'inputCost': 0.14, 'outputCost': 0.28, 'maxChars': 1000000},
+    {'shortName': 'deepseek-v4-pro', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-V4-Pro', 'inputCost': 1.74, 'outputCost': 3.48, 'maxChars': 4000000},
+    {'shortName': 'deepseek-v4-flash', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-V4-Flash', 'inputCost': 0.14, 'outputCost': 0.28, 'maxChars': 4000000},
     {'shortName': 'deepseek-r1', 'provider': 'deepinfra', 'modelName': 'deepseek-ai/DeepSeek-R1-Turbo', 'inputCost': 0.55, 'outputCost': 2.19, 'maxChars': 512000},
 
     # Qwen models (costs per 1M tokens)
