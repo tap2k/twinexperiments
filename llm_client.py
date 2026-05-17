@@ -36,6 +36,7 @@ MODEL_MAP = [
     {'shortName': 'gemini-2.5-flash-lite', 'provider': 'google', 'modelName': 'gemini-2.5-flash-lite', 'inputCost': 0.10, 'outputCost': 0.40, 'maxChars': 1000000},
 
     # xAI models (costs per 1M tokens)
+    {'shortName': 'grok-4.3', 'provider': 'xai', 'modelName': 'grok-4.3', 'inputCost': 1.25, 'outputCost': 2.50, 'maxChars': 4000000},
     {'shortName': 'grok-4.20-beta-reasoning', 'provider': 'xai', 'modelName': 'grok-4.20-beta-0309-reasoning', 'inputCost': 2.0, 'outputCost': 6.0, 'maxChars': 2000000},
     {'shortName': 'grok-4.20-beta', 'provider': 'xai', 'modelName': 'grok-4.20-beta-0309-non-reasoning', 'inputCost': 2.0, 'outputCost': 2.0, 'maxChars': 2000000},
     {'shortName': 'grok-4', 'provider': 'xai', 'modelName': 'grok-4', 'inputCost': 3.0, 'outputCost': 15.0, 'maxChars': 1024000},
